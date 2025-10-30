@@ -1,0 +1,17 @@
+{% extends 'lms/base.html' %}
+{% block title %}{{ lesson.title }} — Innoknowvex{% endblock %}
+{% block header %}<h1 class="text-2xl font-bold">{{ lesson.title }}</h1>{% endblock %}
+{% block content %}
+  {% if lesson %}
+    {% if forbidden %}
+      <div class="p-4 bg-gray-800 rounded">You must be enrolled to view this lesson. <a class="text-yellow-300" href="{% url 'lms:course_detail' slug=lesson.module.course.slug %}">Enroll now</a></div>
+    {% else %}
+      <div class="bg-gray-800 p-4 rounded">
+        <div class="text-sm text-gray-400">Module: {{ lesson.module.title }} • Course: {{ lesson.module.course.title }}</div>
+        <div class="mt-3 whitespace-pre-line">{{ lesson.content }}</div>
+      </div>
+    {% endif %}
+  {% else %}
+    <p>Lesson not found.</p>
+  {% endif %}
+{% endblock %}

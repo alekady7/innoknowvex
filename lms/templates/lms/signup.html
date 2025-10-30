@@ -1,0 +1,28 @@
+{% extends 'lms/base.html' %}
+{% block title %}Register — Innoknowvex{% endblock %}
+{% block content %}
+<div class="max-w-md mx-auto mt-10 bg-gray-800 p-6 rounded">
+  <h2 class="text-xl font-semibold mb-4">Create account</h2>
+  <form method="post" novalidate>
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="space-y-3">
+      {% for field in form %}
+        <div>
+          <label class="block text-gray-300 text-sm mb-1">{{ field.label }}</label>
+          {{ field }}
+          <div class="text-red-400 text-sm mt-1">{{ field.errors }}</div>
+        </div>
+      {% endfor %}
+    </div>
+
+    <div class="mt-4">
+      <button type="submit" class="px-4 py-2 rounded border">Create account</button>
+    </div>
+  </form>
+
+  <p class="mt-4 text-sm text-gray-400">Already have an account?
+    <a href="{% url 'accounts:login' %}" class="text-blue-400">Login</a>
+  </p>
+</div>
+{% endblock %}

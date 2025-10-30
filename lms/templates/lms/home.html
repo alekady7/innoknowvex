@@ -1,0 +1,10 @@
+{% extends 'lms/base.html' %}
+{% block title %}Home — Innoknowvex{% endblock %}
+{% block header %}<h1 class="text-2xl font-bold">Innoknowvex LMS</h1>{% endblock %}
+{% block content %}
+  <div class="bg-gray-800 p-6 rounded">
+    <h2 class="text-xl">Learn practical skills — projects, mentorship, assessments.</h2>
+    <p class="text-gray-400 mt-2">Start with our curated courses.</p>
+    <a class="inline-block mt-4 px-4 py-2 rounded border border-gray-700" href="{% url 'lms:course_list' %}">Browse courses</a>
+  </div>
+{% endblock %}

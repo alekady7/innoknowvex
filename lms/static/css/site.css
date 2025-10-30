@@ -1,0 +1,377 @@
+:root {
+  --bg: #0b0d10;
+  --panel: #0f1720;
+  --muted: #9aa4b2;
+  --accent: #7be4ff;
+  --card: #0d1114;
+  --mono: "Courier New", Courier, monospace;
+}
+* {
+  box-sizing: border-box;
+}
+html,
+body {
+  height: 100%;
+  margin: 0;
+  background: var(--bg);
+  color: #e6eef6;
+  font-family: var(--mono);
+  font-size: 16px;
+}
+.app {
+  display: flex;
+  min-height: 100vh;
+}
+.sidebar {
+  width: 220px;
+  padding: 22px 16px;
+  background: linear-gradient(180deg, #071018 0%, #0d1114 100%);
+  border-right: 1px solid rgba(255, 255, 255, 0.03);
+  display: flex;
+  flex-direction: column;
+}
+.brand-logo {
+  font-weight: 700;
+  letter-spacing: 1px;
+  font-size: 14px;
+}
+.brand-sub {
+  font-size: 11px;
+  color: var(--muted);
+  margin-top: 6px;
+}
+.nav {
+  margin-top: 28px;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+.nav a {
+  text-decoration: none;
+  color: inherit;
+  padding: 8px;
+  border-radius: 6px;
+  font-size: 13px;
+}
+.nav a:hover {
+  background: rgba(255, 255, 255, 0.02);
+}
+.footer-note {
+  margin-top: auto;
+  color: var(--muted);
+  font-size: 12px;
+}
+
+.content {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 100vh;
+}
+.topbar {
+  padding: 18px 26px;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.02);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+.page {
+  padding: 28px;
+}
+
+.hero {
+  padding: 26px;
+  background: linear-gradient(90deg, rgba(123, 228, 255, 0.04), transparent);
+  border-radius: 8px;
+  margin-bottom: 18px;
+}
+.btn {
+  display: inline-block;
+  padding: 10px 14px;
+  border-radius: 6px;
+  background: transparent;
+  border: 1px solid rgba(123, 228, 255, 0.12);
+  color: var(--accent);
+  text-decoration: none;
+  margin-top: 10px;
+  font-family: var(--mono);
+}
+
+.cards {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(320px, 1fr));
+  gap: 12px;
+}
+.card {
+  display: flex;
+  align-items: center;
+  text-decoration: none;
+  background: var(--card);
+  padding: 14px;
+  border-radius: 8px;
+  border: 1px solid rgba(255, 255, 255, 0.02);
+  transition: transform 0.12s;
+}
+.card:hover {
+  transform: translateY(-4px);
+}
+.card-left {
+  width: 52px;
+  text-align: center;
+}
+.mono.small {
+  font-size: 13px;
+  color: var(--muted);
+}
+.card-main {
+  flex: 1;
+  padding: 0 12px;
+}
+.card-main h3 {
+  margin: 0;
+  font-size: 16px;
+}
+.card-main .muted {
+  margin: 6px 0 0;
+  color: var(--muted);
+  font-size: 13px;
+}
+.card-right {
+  width: 36px;
+  text-align: right;
+  font-size: 26px;
+  color: rgba(255, 255, 255, 0.06);
+}
+
+.course-detail .module {
+  margin-bottom: 14px;
+  padding: 10px;
+  border-left: 3px solid rgba(123, 228, 255, 0.06);
+  background: rgba(255, 255, 255, 0.01);
+  border-radius: 6px;
+}
+.lessons {
+  list-style: none;
+  padding: 6px 12px;
+  margin: 6px 0 0;
+}
+.lessons li {
+  padding: 6px 0;
+}
+.lessons a {
+  color: var(--accent);
+  text-decoration: none;
+  font-family: var(--mono);
+}
+.muted {
+  color: var(--muted);
+}
+
+.lesson .lesson-body {
+  margin-top: 12px;
+  padding: 14px;
+  background: #051018;
+  border-radius: 6px;
+  font-family: var(--mono);
+}
+.video iframe {
+  width: 100%;
+  height: 360px;
+  border-radius: 8px;
+  margin-top: 12px;
+}
+@media (max-width: 800px) {
+  .sidebar {
+    display: none;
+  }
+  .cards {
+    grid-template-columns: 1fr;
+  }
+}
+
+input,
+textarea {
+  background: #0b1220;
+  border: 1px solid rgba(255, 255, 255, 0.04);
+  color: #e6eef6;
+  padding: 8px;
+  border-radius: 6px;
+  width: 100%;
+}
+textarea {
+  min-height: 140px;
+}
+
+.home-container {
+  text-align: center;
+  margin-top: 5rem;
+  color: #fff;
+}
+
+.home-container h1 {
+  font-size: 2rem;
+  margin-bottom: 0.5rem;
+}
+
+.home-container .tagline {
+  color: #aaa;
+  margin-bottom: 2rem;
+}
+
+.home-action {
+  display: flex;
+  justify-content: center;
+  gap: 1rem;
+}
+
+.btn, .btn-outline {
+  padding: 0.7rem 1.5rem;
+  border-radius: 0.5rem;
+  text-decoration: none;
+  font-weight: 600;
+}
+
+.btn {
+  background: #2563eb;
+  color: white;
+  transition: background 0.3s;
+}
+
+.btn:hover {
+  background: #1d4ed8;
+}
+
+.btn-outline {
+  border: 2px solid #2563eb;
+  color: #2563eb;
+}
+
+.btn-outline:hover {
+  background: #2563eb;
+  color: white;
+}
+
+/* --- Avatar + dropdown in navbar --- */
+
+/* Make nav-avatar-wrapper a block so it lines up with other nav links (full width)
+   and center the avatar inside it. */
+.nav-avatar-wrapper {
+  position: relative;
+  display: block;
+  margin: 0;
+  padding: 6px 0;
+}
+
+/* center the avatar inside the wrapper */
+.nav-avatar {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  background: linear-gradient(180deg, #102030, #0b1624);
+  border: 1px solid rgba(255,255,255,0.04);
+  color: #ffffff; /* force white text for avatar initials */
+  font-weight: 700;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  cursor: pointer;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  font-size: 13px;
+  transition: background .12s;
+  margin: 0 auto; /* center horizontally */
+}
+.nav-avatar:hover { background: linear-gradient(180deg, #15304e, #0d1e2b); }
+
+/* dropdown hidden by default; show on wrapper hover */
+/* Position the dropdown centered below the avatar using transform */
+.nav-avatar-dropdown {
+  display: none;
+  position: absolute;
+  right: 50%;
+  transform: translateX(50%); /* shift right 50% so right:50% becomes centered */
+  top: 48px;
+  background: #0c131a;
+  border: 1px solid rgba(255,255,255,0.03);
+  border-radius: 8px;
+  min-width: 160px;
+  box-shadow: 0 8px 30px rgba(2,6,23,0.6);
+  z-index: 50;
+  padding: 6px 8px;
+}
+
+/* show when hovering the wrapper */
+.nav-avatar-wrapper:hover .nav-avatar-dropdown {
+  display: block;
+}
+
+/* Dropdown links styling (looks like nav links) */
+.dropdown-link {
+  display: block;
+  padding: 8px 10px;
+  color: #e6eef6;
+  text-decoration: none;
+  border-radius: 6px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  font-size: 14px;
+}
+.dropdown-link:hover {
+  background: rgba(255,255,255,0.02);
+  color: #cfeffb;
+}
+
+/* Logout button inside dropdown should look identical to .dropdown-link */
+.logout-button {
+  background: transparent;
+  border: none;
+  padding: 8px 10px;
+  margin: 0;
+  color: #e6eef6; /* force white color */
+  width: 100%;
+  text-align: left;
+  font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
+  font-size: 14px;
+  cursor: pointer;
+  border-radius: 6px;
+}
+
+/* Make logout-button hover same effect as link */
+.logout-button:hover { background: rgba(255,255,255,0.02); color: #cfeffb; }
+
+/* Profile avatar on profile page */
+.profile-avatar {
+  width: 92px;
+  height: 92px;
+  border-radius: 50%;
+  background: linear-gradient(180deg,#102030,#0b1624);
+  color: #ffffff; /* force white initials */
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  font-weight:800;
+  font-size:28px;
+  border:1px solid rgba(255,255,255,0.04);
+  margin-right: 12px;
+}
+
+/* center header area on profile page */
+.profile-header {
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  gap: 20px;
+}
+
+/* readonly field styling (profile page) */
+.readonly-field {
+  width: 100%;
+  padding: 8px;
+  background: #07101a;
+  border-radius: 6px;
+  color: #ffffff; /* white text for inputs */
+  border: 1px solid rgba(255,255,255,0.03);
+}
+
+/* small responsive tweak to keep avatar centered on small screens */
+@media (max-width: 800px) {
+  .nav-avatar-dropdown { right: 8px; transform: none; left: auto; }
+}

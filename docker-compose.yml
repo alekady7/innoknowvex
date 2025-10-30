@@ -1,0 +1,15 @@
+# ./docker-compose.yml
+version: "3.8"
+services:
+  web:
+    build: .
+    image: innoknowvex_app:latest
+    ports:
+      - "8000:8000"
+    volumes:
+      - ./:/app            # dev: bind mount local project so changes reflect immediately
+      - ./data:/app/data   # store sqlite and other persistent files here
+    environment:
+      - PYTHONUNBUFFERED=1
+      - DJANGO_SETTINGS_MODULE=innoknowvex_site.settings
+    command: sh -c "python manage.py migrate --noinput && python manage.py runserver 0.0.0.0:8000"
