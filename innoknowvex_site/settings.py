@@ -25,7 +25,7 @@ if _allowed:
     # normalize by splitting on comma and stripping whitespace
     ALLOWED_HOSTS = [h.strip() for h in _allowed.replace(',', ' ').split() if h.strip()]
 else:
-    ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+    ALLOWED_HOSTS = ['innoknowvex.onrender.com', 'localhost', '127.0.0.1']
 
 # When behind a proxy (Render, etc.) allow Django to detect HTTPS via X-Forwarded-Proto
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
