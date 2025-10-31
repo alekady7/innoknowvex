@@ -9,13 +9,14 @@ from .models import Course, Module, Lesson, Enrollment
 from .forms import ContactForm
 
 # HomeView redirects unauthenticated visitors to accounts:login
-class HomeView(TemplateView):
+class HomeView(LoginRequiredMixin, TemplateView):
+    """
+    Home page — requires login. Unauthenticated users will be redirected
+    to LOGIN_URL (we point that to '/login/').
+    """
     template_name = 'lms/home.html'
-
-    def dispatch(self, request, *args, **kwargs):
-        if not request.user.is_authenticated:
-            return redirect(reverse_lazy('accounts:login'))
-        return super().dispatch(request, *args, **kwargs)
+    login_url = reverse_lazy('accounts:login')   # sends unauthenticated users to /login
+    redirect_field_name = 'next'
 
 
 class CourseListView(LoginRequiredMixin, ListView):

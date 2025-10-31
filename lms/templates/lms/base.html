@@ -8,6 +8,48 @@
   <link rel="stylesheet" href="{% static 'css/site.css' %}">
 </head>
 <body>
+  <!-- MOBILE HEADER (only visible on small screens via CSS below) -->
+  <header class="mobile-header" role="banner" aria-hidden="true">
+    <div class="mobile-left">
+      <!-- left: triple-dots button (opens mobile menu with only Home/Courses/Contact) -->
+      <button id="mobile-menu-btn" class="mobile-menu-btn" aria-label="Open menu">⋯</button>
+      <div class="brand-mobile">INNOKNOWVEX <span class="brand-tag">LMS</span></div>
+    </div>
+
+    <div class="mobile-right">
+      {% if user.is_authenticated %}
+        <!-- right: avatar button (opens mobile-profile dropdown only) -->
+        <button id="mobile-avatar-btn" class="mobile-avatar-btn" aria-haspopup="true" aria-expanded="false">
+          {{ user.first_name|default:''|slice:":1"|upper }}{{ user.last_name|default:''|slice:":1"|upper }}
+        </button>
+      {% else %}
+        <a href="{% url 'accounts:login' %}" class="mobile-link">Login</a>
+      {% endif %}
+    </div>
+  </header>
+
+  <!-- MOBILE NAV (left triple-dots) — only site links: Home, Courses, Contact -->
+  <nav id="mobile-nav" class="mobile-nav" aria-hidden="true">
+    <div class="mobile-nav-inner" role="menu" aria-label="Mobile site links">
+      <div class="brand-mobile-nav">INNOKNOWVEX <span class="brand-tag">LMS</span></div>
+
+      <a href="{% url 'lms:home' %}" class="mobile-nav-link">Home</a>
+      <a href="{% url 'lms:course_list' %}" class="mobile-nav-link">Courses</a>
+      <a href="{% url 'lms:contact' %}" class="mobile-nav-link">Contact</a>
+    </div>
+  </nav>
+
+  <!-- MOBILE AVATAR DROPDOWN (right avatar) — only Profile & Logout -->
+  <div id="mobile-avatar-dropdown" class="mobile-avatar-dropdown" aria-hidden="true" role="menu">
+    {% if user.is_authenticated %}
+      <a href="{% url 'accounts:profile' %}" class="dropdown-link">Profile</a>
+      <form method="post" action="{% url 'accounts:logout' %}">
+        {% csrf_token %}
+        <button type="submit" class="logout-button">Logout</button>
+      </form>
+    {% endif %}
+  </div>
+
   <div class="app">
     <aside class="sidebar">
       <div class="brand">
@@ -65,5 +107,95 @@
       </section>
     </main>
   </div>
+
+  <!-- Minimal JS to toggle mobile menu and mobile avatar dropdown independently -->
+  <script>
+    (function(){
+      const mobileMenuBtn = document.getElementById('mobile-menu-btn');
+      const mobileNav = document.getElementById('mobile-nav');
+      const mobileAvatarBtn = document.getElementById('mobile-avatar-btn');
+      const mobileAvatarDropdown = document.getElementById('mobile-avatar-dropdown');
+
+      function openMobileNav(){
+        if(!mobileNav) return;
+        mobileNav.classList.add('open');
+        mobileNav.setAttribute('aria-hidden','false');
+        document.body.style.overflow = 'hidden';
+      }
+      function closeMobileNav(){
+        if(!mobileNav) return;
+        mobileNav.classList.remove('open');
+        mobileNav.setAttribute('aria-hidden','true');
+        document.body.style.overflow = '';
+      }
+      function toggleMobileNav(){
+        if(!mobileNav) return;
+        if(mobileNav.classList.contains('open')) closeMobileNav(); else openMobileNav();
+      }
+
+      function openMobileAvatar(){
+        if(!mobileAvatarDropdown) return;
+        mobileAvatarDropdown.style.display = 'block';
+        mobileAvatarDropdown.setAttribute('aria-hidden','false');
+        if (mobileAvatarBtn) mobileAvatarBtn.setAttribute('aria-expanded','true');
+      }
+      function closeMobileAvatar(){
+        if(!mobileAvatarDropdown) return;
+        mobileAvatarDropdown.style.display = 'none';
+        mobileAvatarDropdown.setAttribute('aria-hidden','true');
+        if (mobileAvatarBtn) mobileAvatarBtn.setAttribute('aria-expanded','false');
+      }
+      function toggleMobileAvatar(){
+        if(!mobileAvatarDropdown) return;
+        if (mobileAvatarDropdown.style.display === 'block') closeMobileAvatar(); else openMobileAvatar();
+      }
+
+      // triple-dots (left)
+      if(mobileMenuBtn){
+        mobileMenuBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          // ensure avatar dropdown closed
+          closeMobileAvatar();
+          toggleMobileNav();
+        });
+      }
+
+      // close mobile nav when clicking overlay (outside inner)
+      if(mobileNav){
+        mobileNav.addEventListener('click', function(e){
+          if(e.target === mobileNav) closeMobileNav();
+        });
+      }
+
+      // avatar button (right) toggles avatar dropdown only
+      if(mobileAvatarBtn){
+        mobileAvatarBtn.addEventListener('click', function(e){
+          e.stopPropagation();
+          // ensure mobile nav closed
+          closeMobileNav();
+          toggleMobileAvatar();
+        });
+      }
+
+      // clicking anywhere else closes both mobile things
+      document.addEventListener('click', function(){
+        closeMobileNav();
+        closeMobileAvatar();
+        // also hide desktop dropdowns if open
+        const desktopDropdown = document.querySelector('.nav-avatar-dropdown');
+        if(desktopDropdown) desktopDropdown.style.display = 'none';
+      });
+
+      // Esc closes
+      document.addEventListener('keydown', function(e){
+        if(e.key === 'Escape'){
+          closeMobileNav();
+          closeMobileAvatar();
+          const desktopDropdown = document.querySelector('.nav-avatar-dropdown');
+          if(desktopDropdown) desktopDropdown.style.display = 'none';
+        }
+      });
+    })();
+  </script>
 </body>
 </html>
