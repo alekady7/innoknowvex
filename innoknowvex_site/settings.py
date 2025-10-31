@@ -19,13 +19,12 @@ DEBUG = os.environ.get('DJANGO_DEBUG', 'True') == 'True'
 # Allows controlling hosts from env (comma/space separated)
 
 # ALLOWED_HOSTS: accept comma-separated list from env var, fallback to localhost
-_allowed = os.environ.get('DJANGO_ALLOWED_HOSTS', '')
-if _allowed:
-    # allow "example.com,sub.example.com" or "example.com sub.example.com"
-    # normalize by splitting on comma and stripping whitespace
-    ALLOWED_HOSTS = [h.strip() for h in _allowed.replace(',', ' ').split() if h.strip()]
-else:
-    ALLOWED_HOSTS = ['innoknowvex.onrender.com', 'localhost', '127.0.0.1']
+ALLOWED_HOSTS = [
+    'innoknowvex.com',
+    'www.innoknowvex.com',  # optional, if you serve both
+    'localhost',
+    '127.0.0.1',
+]
 
 # When behind a proxy (Render, etc.) allow Django to detect HTTPS via X-Forwarded-Proto
 SECURE_PROXY_SSL_HEADER = ('HTTP_X_FORWARDED_PROTO', 'https')
