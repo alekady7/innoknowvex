@@ -1,0 +1,40 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Sign up — Innoknowvex{% endblock %}
+
+{% block content %}
+<div class="auth-card" role="main" aria-labelledby="register-title">
+  <div class="brand">
+    <div class="logo">IN</div>
+    <h2 id="register-title">Create an account</h2>
+    <p class="lead">Fill in details to register</p>
+  </div>
+
+  <form method="post" action="{% url 'accounts:register' %}">
+    {% csrf_token %}
+    {{ form.non_field_errors }}
+    <div class="form-row">
+      <label for="id_username">Username</label>
+      <input id="id_username" name="username" class="input" placeholder="Choose a username" required type="text" value="{{ form.data.username|default_if_none:'' }}">
+      {{ form.username.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="id_password1">Password</label>
+      <input id="id_password1" name="password1" class="input" placeholder="Enter password" required type="password">
+      {{ form.password1.errors }}
+    </div>
+
+    <div class="form-row">
+      <label for="id_password2">Confirm password</label>
+      <input id="id_password2" name="password2" class="input" placeholder="Confirm password" required type="password">
+      {{ form.password2.errors }}
+    </div>
+
+    <button type="submit" class="btn">Create account</button>
+  </form>
+
+  <div class="note">
+    <p>By signing up you agree to the terms and policies.</p>
+  </div>
+</div>
+{% endblock %}

@@ -1,60 +1,47 @@
+# accounts/views.py
 from django.shortcuts import render, redirect
 from django.contrib.auth import authenticate, login, logout
+from django.contrib.auth.decorators import login_required
+from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
 from django.urls import reverse
-from django.contrib.auth.decorators import login_required
-from .forms import RegisterForm, LoginForm
-
-def register_view(request):
-    # if already logged in, send to home
-    if request.user.is_authenticated:
-        return redirect('lms:home')
-
-    if request.method == "POST":
-        form = RegisterForm(request.POST)
-        if form.is_valid():
-            user = form.save(commit=False)
-            email = form.cleaned_data.get('email')
-            if email:
-                user.email = email
-            user.set_password(form.cleaned_data['password1'])
-            user.save()
-            messages.success(request, "Account created. Please log in.")
-            return redirect('accounts:login')
-    else:
-        form = RegisterForm()
-
-    # reuse the lms signup template you already have
-    return render(request, "lms/signup.html", {"form": form})
-
 
 def login_view(request):
-    # if already logged in, go to home
+    # If already logged in, send to home
     if request.user.is_authenticated:
         return redirect('lms:home')
 
-    next_url = request.GET.get('next') or request.POST.get('next') or reverse('lms:home')
-
-    if request.method == "POST":
-        form = LoginForm(request, data=request.POST)
+    form = AuthenticationForm(request, data=request.POST or None)
+    if request.method == 'POST':
         if form.is_valid():
             user = form.get_user()
             login(request, user)
-            messages.success(request, f"Welcome back, {user.username}!")
-            return redirect(next_url)
-    else:
-        form = LoginForm()
+            # After successful login send to home
+            return redirect('lms:home')
+        else:
+            messages.error(request, "Invalid username/password.")
+    return render(request, 'accounts/login.html', {'form': form})
 
-    # reuse the lms login template you already have
-    return render(request, "lms/login.html", {"form": form, "next": next_url})
+def register_view(request):
+    # If you want to restrict registration, you can add a check here.
+    # Currently it will allow registration; change as desired.
+    if request.user.is_authenticated:
+        return redirect('lms:home')
 
+    form = UserCreationForm(request.POST or None)
+    if request.method == 'POST':
+        if form.is_valid():
+            user = form.save()
+            login(request, user)
+            return redirect('lms:home')
+        else:
+            messages.error(request, "Please correct the errors below.")
+    return render(request, 'accounts/register.html', {'form': form})
 
 def logout_view(request):
-    # accept both GET and POST — but templates should use POST
-    if request.user.is_authenticated:
-        logout(request)
+    logout(request)
+    # After logout send to login page (clean /login)
     return redirect('accounts:login')
-
 
 @login_required(login_url='accounts:login')
 def profile_view(request):

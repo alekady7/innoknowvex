@@ -1,0 +1,33 @@
+{% extends "accounts/auth_base.html" %}
+{% block title %}Login — Innoknowvex{% endblock %}
+
+{% block content %}
+<div class="auth-card" role="main" aria-labelledby="auth-title">
+  <div class="brand">
+    <div class="logo">IN</div>
+    <h2 id="auth-title">Welcome back</h2>
+    <p class="lead">Sign in to your account to continue</p>
+  </div>
+
+  <form method="post" action="{% url 'accounts:login' %}">
+    {% csrf_token %}
+    <div class="form-row">
+      <label for="id_username">Email</label>
+      <input id="id_username" name="username" class="input" placeholder="Enter your email" required type="text" value="{{ form.data.username|default_if_none:'' }}">
+      {% if form.username.errors %}<div class="error">{{ form.username.errors }}</div>{% endif %}
+    </div>
+
+    <div class="form-row">
+      <label for="id_password">Password</label>
+      <input id="id_password" name="password" class="input" placeholder="Enter your password" required type="password">
+      {% if form.password.errors %}<div class="error">{{ form.password.errors }}</div>{% endif %}
+    </div>
+
+    <button type="submit" class="btn">Sign in</button>
+  </form>
+
+  <div class="note">
+    <p>Account creation is restricted to administrators only. Contact your system administrator for access.</p>
+  </div>
+</div>
+{% endblock %}
