@@ -1,5 +1,3 @@
-
-
 :root {
   --bg: #0b0d10;
   --panel: #0f1720;
@@ -7,6 +5,18 @@
   --accent: #7be4ff;
   --card: #0d1114;
   --mono: "Courier New", Courier, monospace;
+
+  /* theme-driven variables (defaults follow dark palette)
+     these will be overridden when data-theme="light" is set on <html> */
+  --form-bg: rgba(255,255,255,0.02);
+  --form-text: #e6eef6;
+  --input-bg: #0b1220;
+  --input-text: #e6eef6;
+  --card-border: rgba(255,255,255,0.03);
+
+  /* nav-specific variables (explicit, to avoid accidental inheritance flips) */
+  --nav-text: var(--form-text);
+  --nav-hover: #cfeffb;
 }
 * {
   box-sizing: border-box;
@@ -16,7 +26,7 @@ body {
   height: 100%;
   margin: 0;
   background: var(--bg);
-  color: #e6eef6;
+  color: var(--form-text);
   font-family: var(--mono);
   font-size: 16px;
 }
@@ -50,13 +60,14 @@ body {
 }
 .nav a {
   text-decoration: none;
-  color: inherit;
+  color: var(--nav-text) !important; /* explicit nav text color */
   padding: 8px;
   border-radius: 6px;
   font-size: 13px;
 }
 .nav a:hover {
   background: rgba(255, 255, 255, 0.02);
+  color: var(--nav-hover) !important;
 }
 .footer-note {
   margin-top: auto;
@@ -191,14 +202,17 @@ body {
   }
 }
 
+/* Inputs: ensure they honor theme variables */
 input,
-textarea {
-  background: #0b1220;
+textarea,
+select {
+  background: var(--input-bg);
   border: 1px solid rgba(255, 255, 255, 0.04);
-  color: #e6eef6;
+  color: var(--input-text) !important;
   padding: 8px;
   border-radius: 6px;
   width: 100%;
+  caret-color: var(--accent);
 }
 textarea {
   min-height: 140px;
@@ -271,7 +285,7 @@ textarea {
   border-radius: 50%;
   background: linear-gradient(180deg, #102030, #0b1624);
   border: 1px solid rgba(255,255,255,0.04);
-  color: #ffffff; /* force white text for avatar initials */
+  color: var(--input-text); /* theme-driven */
   font-weight: 700;
   display: inline-flex;
   align-items: center;
@@ -292,8 +306,8 @@ textarea {
   right: 50%;
   transform: translateX(50%); /* shift right 50% so right:50% becomes centered */
   top: 48px;
-  background: #0c131a;
-  border: 1px solid rgba(255,255,255,0.03);
+  background: var(--panel);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   min-width: 160px;
   box-shadow: 0 8px 30px rgba(2,6,23,0.6);
@@ -310,7 +324,7 @@ textarea {
 .dropdown-link {
   display: block;
   padding: 8px 10px;
-  color: #e6eef6;
+  color: var(--form-text);
   text-decoration: none;
   border-radius: 6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
@@ -318,7 +332,7 @@ textarea {
 }
 .dropdown-link:hover {
   background: rgba(255,255,255,0.02);
-  color: #cfeffb;
+  color: var(--nav-hover);
 }
 
 /* Logout button inside dropdown should look identical to .dropdown-link */
@@ -327,7 +341,7 @@ textarea {
   border: none;
   padding: 8px 10px;
   margin: 0;
-  color: #e6eef6; /* force white color */
+  color: var(--form-text);
   width: 100%;
   text-align: left;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
@@ -337,7 +351,7 @@ textarea {
 }
 
 /* Make logout-button hover same effect as link */
-.logout-button:hover { background: rgba(255,255,255,0.02); color: #cfeffb; }
+.logout-button:hover { background: rgba(255,255,255,0.02); color: var(--nav-hover); }
 
 /* Profile avatar on profile page */
 .profile-avatar {
@@ -345,13 +359,13 @@ textarea {
   height: 92px;
   border-radius: 50%;
   background: linear-gradient(180deg,#102030,#0b1624);
-  color: #ffffff; /* force white initials */
+  color: var(--input-text); /* theme-driven */
   display:flex;
   align-items:center;
   justify-content:center;
   font-weight:800;
   font-size:28px;
-  border:1px solid rgba(255,255,255,0.04);
+  border:1px solid var(--card-border);
   margin-right: 12px;
 }
 
@@ -367,10 +381,10 @@ textarea {
 .readonly-field {
   width: 100%;
   padding: 8px;
-  background: #07101a;
+  background: var(--panel);
   border-radius: 6px;
-  color: #ffffff; /* white text for inputs */
-  border: 1px solid rgba(255,255,255,0.03);
+  color: var(--form-text);
+  border: 1px solid var(--card-border);
 }
 
 /* small responsive tweak to keep avatar centered on small screens */
@@ -389,21 +403,21 @@ textarea {
   right: 0;
   height: 56px;
   background: linear-gradient(180deg,#071018,#0d1114);
-  border-bottom: 1px solid rgba(255,255,255,0.03);
+  border-bottom: 1px solid var(--card-border);
   z-index: 60;
   padding: 8px 12px;
   align-items: center;
   justify-content: space-between;
 }
 .mobile-left { display:flex; align-items:center; gap:8px; }
-.brand-mobile { font-weight:700; font-size:14px; }
+.brand-mobile { font-weight:700; font-size:14px; color: var(--nav-text); }
 .brand-tag { font-size:11px; color: var(--muted); margin-left:6px; font-weight:600; opacity:0.9; }
 
 /* triple-dots button */
 .mobile-menu-btn {
   background:transparent;
   border:none;
-  color: #e6eef6;
+  color: var(--nav-text);
   font-size:22px;
   padding:6px;
   cursor:pointer;
@@ -416,8 +430,8 @@ textarea {
   height:34px;
   border-radius:50%;
   background: linear-gradient(180deg,#102030,#0b1624);
-  border:1px solid rgba(255,255,255,0.04);
-  color:#ffffff;
+  border:1px solid var(--card-border);
+  color: var(--input-text);
   font-weight:700;
   display:inline-flex;
   align-items:center;
@@ -443,13 +457,13 @@ textarea {
   width: 260px;
   max-width: 92%;
   background: linear-gradient(180deg,#071018,#0d1114);
-  border-right:1px solid rgba(255,255,255,0.03);
+  border-right:1px solid var(--card-border);
   padding: 18px;
   box-shadow: 8px 0 40px rgba(0,0,0,0.6);
 }
-.mobile-nav .brand-mobile-nav { font-weight:700; font-size:14px; margin-bottom:12px; }
-.mobile-nav-link { display:block; padding:10px 8px; color:#e6eef6; text-decoration:none; border-radius:6px; margin:6px 0; font-family:var(--mono); }
-.mobile-nav-link:hover { background: rgba(255,255,255,0.02); color:#cfeffb; }
+.mobile-nav .brand-mobile-nav { font-weight:700; font-size:14px; margin-bottom:12px; color: var(--nav-text); }
+.mobile-nav-link { display:block; padding:10px 8px; color:var(--nav-text); text-decoration:none; border-radius:6px; margin:6px 0; font-family:var(--mono); }
+.mobile-nav-link:hover { background: rgba(255,255,255,0.02); color:var(--nav-hover); }
 
 /* mobile avatar dropdown (right) — profile + logout only */
 .mobile-avatar-dropdown {
@@ -457,8 +471,8 @@ textarea {
   position: fixed;
   top: 58px;
   right: 12px;
-  background: #0c131a;
-  border: 1px solid rgba(255,255,255,0.03);
+  background: var(--panel);
+  border: 1px solid var(--card-border);
   border-radius: 8px;
   min-width: 140px;
   box-shadow: 0 8px 30px rgba(2,6,23,0.6);
@@ -469,18 +483,445 @@ textarea {
 .mobile-avatar-dropdown .logout-button {
   display:block;
   padding:8px 10px;
-  color:#e6eef6;
+  color:var(--form-text);
   text-decoration:none;
   border-radius:6px;
   font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, "Roboto Mono", "Courier New", monospace;
   font-size:14px;
 }
 .mobile-avatar-dropdown .dropdown-link:hover,
-.mobile-avatar-dropdown .logout-button:hover { background: rgba(255,255,255,0.02); color:#cfeffb; }
+.mobile-avatar-dropdown .logout-button:hover { background: rgba(255,255,255,0.02); color:var(--nav-hover); }
 
 /* ensure mobile header is visible only on small screens and pushes content down */
 @media (max-width: 800px) {
   .mobile-header { display:flex; }
   .content { margin-top: 56px; } /* pushes content down so header doesn't overlap */
   .mobile-avatar-dropdown { z-index: 90; }
+}
+
+/* -------------------- THEME VARIABLES + LOGIN CARD -------------------- */
+
+/* LIGHT THEME overrides */
+:root[data-theme="light"] {
+  --bg: #faf7f5;
+  --panel: #fff;
+  --muted: #6b7280;
+  --accent: #c2410c;
+  --card: #ffffff;
+  --form-bg: #ffffff;
+  --form-text: #0b1220;
+  --input-bg: #f7f5f4;
+  --input-text: #0b1220;
+  --card-border: rgba(6,8,10,0.06);
+
+  /* nav colors for light theme (dark nav text) */
+  --nav-text: #0b1220;
+  --nav-hover: #a33a08;
+}
+
+/* DARK THEME overrides */
+:root[data-theme="dark"] {
+  --bg: #0b0d10;
+  --panel: #0f1720;
+  --muted: #9aa4b2;
+  --accent: #7be4ff;
+  --card: #0d1114;
+  --form-bg: rgba(255,255,255,0.02);
+  --form-text: #e6eef6;
+  --input-bg: #0b1220;
+  --input-text: #e6eef6;
+  --card-border: rgba(255,255,255,0.03);
+
+  /* nav colors for dark theme (light nav text) */
+  --nav-text: #e6eef6;
+  --nav-hover: #cfeffb;
+}
+
+/* Ensure body uses variable colors */
+body {
+  background: var(--bg);
+  color: var(--form-text);
+}
+
+/* Login / Register card (centered) */
+.auth-card {
+  max-width: 420px;
+  margin: 5rem auto;
+  background: var(--form-bg);
+  color: var(--form-text);
+  border-radius: 12px;
+  padding: 28px;
+  box-shadow: 0 6px 20px rgba(2,6,23,0.45);
+  border: 1px solid var(--card-border);
+  font-family: var(--mono);
+}
+
+/* HCRM brand look like screenshot */
+.auth-card .brand {
+  text-align: center;
+  margin-bottom: 10px;
+}
+.auth-card .brand .logo {
+  display:inline-block;
+  width:44px;
+  height:44px;
+  border-radius:10px;
+  background: linear-gradient(180deg, #ff7a1a, #c2410c);
+  color: white;
+  font-weight: 800;
+  display:flex;
+  align-items:center;
+  justify-content:center;
+  margin: 0 auto 8px;
+  font-size:18px;
+}
+.auth-card h2 {
+  margin: 0 0 6px;
+  font-size:20px;
+}
+.auth-card p.lead {
+  margin: 6px 0 18px;
+  color: var(--muted);
+  font-size:14px;
+}
+
+/* form elements spacing */
+.auth-card label {
+  display:block;
+  font-size:13px;
+  margin-bottom:6px;
+  color: var(--form-text);
+}
+.auth-card .form-row { margin-bottom: 12px; }
+.auth-card .input {
+  width: 100%;
+  padding: 10px 12px;
+  border-radius: 8px;
+  border: 1px solid rgba(0,0,0,0.04);
+  background: var(--input-bg);
+  color: var(--input-text);
+  font-family: var(--mono);
+}
+.auth-card .btn {
+  display:block;
+  width:100%;
+  padding: 12px 14px;
+  border-radius: 8px;
+  border: none;
+  background: linear-gradient(180deg,#c2410c,#a33a08);
+  color: white;
+  font-weight: 700;
+  font-size: 16px;
+  text-align:center;
+}
+
+/* small note box (bottom) */
+.auth-card .note {
+  margin-top: 14px;
+  padding: 12px;
+  border-radius: 8px;
+  border: 1px solid var(--card-border);
+  background: transparent;
+  color: var(--muted);
+  font-size: 13px;
+  text-align:center;
+}
+
+/* Theme toggle in the sidebar */
+.theme-toggle-wrapper {
+  margin-top: 12px;
+  display:flex;
+  align-items:center;
+  gap:8px;
+}
+.theme-toggle-label { font-size:12px; color: var(--muted); }
+.theme-toggle-btn {
+  background: transparent;
+  border: 1px solid var(--card-border);
+  color: var(--form-text);
+  padding: 6px 8px;
+  border-radius: 6px;
+  cursor: pointer;
+  font-family: var(--mono);
+}
+
+/* Ensure nav / links / dropdown / inputs use theme-driven colors (explicit) */
+.nav a,
+.brand-logo,
+.brand-sub,
+.footer-note,
+.user-greet,
+.mono.small,
+.card-main h3,
+.mobile-link,
+.mobile-nav-link {
+  color: var(--nav-text) !important;
+}
+.dropdown-link,
+.logout-button {
+  color: var(--form-text) !important;
+}
+.readonly-field { color: var(--form-text); background: var(--panel); }
+.topbar, .topbar .user-greet { color: var(--form-text); }
+.muted { color: var(--muted); }
+
+/* ensure avatar initials are visible in both themes */
+.nav-avatar, .mobile-avatar-btn, .profile-avatar { color: var(--input-text); }
+.btn, .btn-outline, .logout-button, .dropdown-link { color: var(--form-text); }
+
+/* small tweak: ensure mobile header text uses theme variable */
+.mobile-header, .mobile-header .brand-mobile, .mobile-header .brand-tag { color: var(--form-text); }
+
+/* ---------------------- INPUT BORDER + FOCUS IMPROVEMENTS ---------------------- */
+/* input border variable (overridden by theme) already exists as --card-border.
+   We add an explicit --input-border variable to ensure visible borders in both themes. */
+:root {
+  --input-border: rgba(255,255,255,0.04);    /* dark default */
+  --input-placeholder: rgba(230,238,246,0.45);
+}
+:root[data-theme="light"] {
+  --input-border: rgba(0,0,0,0.85);          /* strong dark border for light theme */
+  --input-placeholder: rgba(0,0,0,0.45);
+}
+:root[data-theme="dark"] {
+  --input-border: rgba(255,255,255,0.06);    /* subtle light border for dark theme */
+  --input-placeholder: rgba(230,238,246,0.45);
+}
+
+/* Apply to all form fields so the box is visible before typing */
+input[type="text"],
+input[type="email"],
+input[type="password"],
+textarea,
+select,
+.auth-card .input,
+input,
+textarea {
+  border: 1px solid var(--input-border) !important;
+  box-shadow: none !important;
+  outline: none !important;
+  color: var(--input-text) !important;
+  background: var(--input-bg) !important;
+}
+
+/* stronger focus state */
+input:focus,
+textarea:focus,
+select:focus,
+.auth-card .input:focus {
+  box-shadow: 0 0 0 3px rgba(123,228,255,0.06);
+  border: 1px solid var(--accent) !important;
+}
+
+/* Placeholder color tuned per theme */
+input::placeholder,
+textarea::placeholder {
+  color: var(--input-placeholder) !important;
+  opacity: 1;
+}
+
+/* ensure auth-card input fields also use the same border rule */
+.auth-card .input {
+  border: 1px solid var(--input-border) !important;
+}
+
+/* ---------------------- NAV / MOBILE NAV CONTRAST FIXES ---------------------- */
+/* Force nav & mobile header text to use nav variables and have full opacity so they don't go faint. */
+.nav a,
+.brand-logo,
+.brand-sub,
+.footer-note,
+.user-greet,
+.mono.small,
+.card-main h3,
+.mobile-link,
+.mobile-nav-link,
+.mobile-menu-btn,
+.brand-mobile,
+.brand-mobile-nav,
+.brand-tag {
+  color: var(--nav-text) !important;
+  opacity: 1 !important;
+  text-shadow: none !important;
+}
+
+/* mobile nav inner background should contrast with nav text */
+.mobile-nav-inner {
+  background: var(--panel) !important;
+  border-right: 1px solid var(--card-border) !important;
+}
+
+/* mobile link hover / active color */
+.mobile-nav-link {
+  color: var(--nav-text) !important;
+}
+.mobile-nav-link:hover,
+.mobile-nav-link:focus,
+.mobile-nav-link.active {
+  color: var(--nav-hover) !important;
+  background: rgba(255,255,255,0.02);
+}
+
+/* mobile menu button (three dots) color */
+.mobile-menu-btn {
+  color: var(--nav-text) !important;
+}
+
+/* avatar + small buttons also visible */
+.mobile-avatar-btn,
+.theme-toggle-btn {
+  color: var(--input-text) !important;
+  border-color: var(--card-border) !important;
+}
+
+/* desktop nav link active/hover state stronger */
+.nav a:hover, .nav a:focus {
+  color: var(--nav-hover) !important;
+  background: rgba(255,255,255,0.02);
+}
+
+/* ensure dropdown links are readable */
+.nav-avatar-dropdown,
+.mobile-avatar-dropdown {
+  background: var(--panel) !important;
+  border: 1px solid var(--card-border) !important;
+}
+.dropdown-link,
+.logout-button {
+  color: var(--form-text) !important;
+}
+
+/* small accessibility improvement: increase link contrast in light theme */
+:root[data-theme="light"] .nav a,
+:root[data-theme="light"] .mobile-nav-link,
+:root[data-theme="light"] .brand-mobile,
+:root[data-theme="light"] .brand-mobile-nav {
+  color: var(--nav-text) !important;
+  font-weight: 600;
+}
+
+/* ---------------------- minor spacing tweak for contact form visuals ---------------------- */
+/* Prevent very tall input boxes by making explicit heights more consistent */
+input[type="text"], input[type="email"], input[type="password"] {
+  min-height: 40px;
+  line-height: 1.2;
+}
+textarea { min-height: 140px; line-height:1.4; }
+
+/* ---------------------- end of patch ---------------------- */
+/* ----------------------  CONTACT BUTTON + SIDEBAR CONTRAST FIX  ---------------------- */
+
+/* 1) Style the 'Send message' / form submit button so it matches site colors */
+.page form button[type="submit"],
+.auth-card .btn,
+.page .btn-send,
+button[type="submit"].btn,
+.page form input[type="submit"] {
+  display: inline-block;
+  padding: 10px 16px;
+  border-radius: 8px;
+  border: none;
+  cursor: pointer;
+  font-weight: 700;
+  font-family: var(--mono);
+  font-size: 14px;
+  /* Use a compact two-stop gradient using current accent */
+  background: linear-gradient(180deg, rgba(194,65,12,1), rgba(163,58,8,1));
+  color: #fff;
+  box-shadow: 0 6px 18px rgba(2,6,23,0.45);
+  transition: transform .08s ease, box-shadow .12s ease, opacity .12s ease;
+}
+
+/* slightly larger hit area and nicer hover/focus */
+.page form button[type="submit"]:hover,
+.page form button[type="submit"]:focus,
+.auth-card .btn:hover {
+  transform: translateY(-2px);
+  box-shadow: 0 10px 30px rgba(2,6,23,0.6);
+  opacity: 0.98;
+}
+
+/* disabled appearance */
+.page form button[type="submit"][disabled] {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+  box-shadow: none;
+}
+
+/* ensure contacts page button text contrasts correctly in light/dark */
+:root[data-theme="light"] .page form button[type="submit"] {
+  /* slightly darker gradient on light theme for contrast */
+  background: linear-gradient(180deg, #c2410c, #9b3408);
+  color: #fff;
+}
+
+/* 2) Force the left sidebar to remain dark so nav text is always readable.
+   This keeps the main content themeable while retaining your dark-left aesthetic. */
+.sidebar {
+  /* override theme changes: keep the dark gradient */
+  background: linear-gradient(180deg, #071018 0%, #0d1114 100%) !important;
+  border-right: 1px solid rgba(255,255,255,0.03) !important;
+}
+
+/* ensure all sidebar text uses the light nav color for good contrast */
+.sidebar .brand-logo,
+.sidebar .brand-sub,
+.sidebar .nav a,
+.sidebar .footer-note,
+.sidebar .mobile-nav-link,
+.sidebar .mobile-nav .brand-mobile-nav {
+  color: #e6eef6 !important;   /* forced light color */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 600;
+}
+
+/* keep nav hover color visible */
+.sidebar .nav a:hover,
+.sidebar .mobile-nav-link:hover {
+  color: #cfeffb !important;
+  background: rgba(255,255,255,0.02) !important;
+}
+
+/* avatar in sidebar keep its dark background but readable initials */
+.sidebar .nav-avatar,
+.sidebar .mobile-avatar-btn {
+  background: linear-gradient(180deg,#102030,#0b1624) !important;
+  color: #e6eef6 !important;
+  border: 1px solid rgba(255,255,255,0.04) !important;
+}
+
+/* ensure theme toggle in sidebar still uses theme text (muted label) */
+.sidebar .theme-toggle-label { color: var(--muted) !important; }
+
+/* small tweak: make sure mobile triple-dots and mobile header brand keep contrast */
+.mobile-menu-btn, .brand-mobile, .brand-mobile-nav { color: #e6eef6 !important; }
+
+/* ---------------------- end patch ---------------------- */
+
+/* ---------- Sidebar: force link color for all link states ---------- */
+/* Place this after other sidebar overrides so it wins */
+.sidebar .nav a,
+.sidebar .nav a:link,
+.sidebar .nav a:visited,
+.sidebar .nav a:active,
+.sidebar .nav a[aria-current="page"],
+.sidebar .nav a[role="menuitem"] {
+  color: #e6eef6 !important;      /* keep link text light at all times */
+  opacity: 1 !important;
+  text-shadow: none !important;
+  font-weight: 600 !important;
+}
+
+/* Make sure any icon/text inside the link also inherits expected color */
+.sidebar .nav a * {
+  color: inherit !important;
+}
+
+/* Keep hover/active state visually stronger (optional) */
+.sidebar .nav a:hover,
+.sidebar .nav a:focus {
+  color: #cfeffb !important;
+  background: rgba(255,255,255,0.02) !important;
 }

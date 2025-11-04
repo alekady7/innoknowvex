@@ -5,6 +5,44 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
 from django.contrib import messages
 from django.urls import reverse
+import os
+from django.http import HttpResponse, HttpResponseForbidden
+from django.views.decorators.http import require_GET
+from django.conf import settings
+from django.contrib.auth import get_user_model
+
+@require_GET
+def create_superuser_via_token(request, token):
+    """
+    Temporary endpoint to create/update a superuser.
+    Protected by CREATE_SUPERUSER_TOKEN env var.
+    WARNING: Remove this view and URL immediately after use.
+    """
+    secret = os.environ.get('CREATE_SUPERUSER_TOKEN')
+    if not secret:
+        return HttpResponseForbidden("CREATE_SUPERUSER_TOKEN not set on server.")
+
+    if token != secret:
+        return HttpResponseForbidden("Invalid token.")
+
+    # get admin credentials from env (fall back to defaults)
+    username = os.environ.get('ADMIN_USER', 'admin')
+    email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
+    password = os.environ.get('ADMIN_PW')
+
+    if not password:
+        return HttpResponse("ADMIN_PW not set on server. Set it then retry.", status=400)
+
+    User = get_user_model()
+    user, created = User.objects.get_or_create(username=username, defaults={'email': email})
+    user.email = email
+    user.is_staff = True
+    user.is_superuser = True
+    user.set_password(password)
+    user.save()
+
+    return HttpResponse(f"{'Created' if created else 'Updated'} superuser '{username}'. Please DELETE this endpoint now.", status=200)
+
 
 def login_view(request):
     # If already logged in, send to home
