@@ -925,3 +925,17 @@ button[type="submit"].btn,
   color: #cfeffb !important;
   background: rgba(255,255,255,0.02) !important;
 }
+
+/* smaller action links in manage users table */
+.small-action {
+  display:inline-block;
+  padding:6px 8px;
+  margin-right:6px;
+  border-radius:6px;
+  background: transparent;
+  color: var(--accent);
+  font-size:13px;
+  text-decoration:none;
+  border:1px solid rgba(123,228,255,0.06);
+}
+.small-action:hover { background: rgba(123,228,255,0.04); color: var(--nav-hover); }

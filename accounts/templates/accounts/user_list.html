@@ -1,0 +1,56 @@
+{% extends 'lms/base.html' %}
+{% block title %}Manage Users — Innoknowvex{% endblock %}
+
+{% block content %}
+<div style="max-width:1000px; margin: 0 auto;">
+  <h2>Manage Users</h2>
+
+  <form method="get" style="margin-bottom:12px; display:flex; gap:8px; align-items:center;">
+    <input name="q" value="{{ q }}" placeholder="Search name, email or phone" style="flex:1; padding:8px; border-radius:6px; border:1px solid rgba(255,255,255,0.06); background:var(--input-bg); color:var(--input-text);">
+    <button type="submit" class="btn">Search</button>
+    <a href="{% url 'accounts:staff_user_add' %}" class="btn" style="margin-left:8px;">Add user</a>
+  </form>
+
+  <table style="width:100%; border-collapse:collapse;">
+    <thead>
+      <tr style="text-align:left; border-bottom:1px solid rgba(255,255,255,0.04);">
+        <th>Username</th>
+        <th>Email</th>
+        <th>Full name</th>
+        <th>Phone</th>
+        <th>Role</th>
+        <th style="width:120px;">Actions</th>
+      </tr>
+    </thead>
+    <tbody>
+      {% for user in users %}
+        <tr style="border-bottom:1px solid rgba(255,255,255,0.02);">
+          <td>{{ user.username }}</td>
+          <td>{{ user.email }}</td>
+          <td>{{ user.get_full_name }}</td>
+          <td>{{ user.profile.phone|default:"—" }}</td>
+          <td>{{ user.profile.role|default:"—" }}</td>
+          <td>
+            <a href="{% url 'accounts:staff_user_detail' user.pk %}" class="small-action">View</a>
+            <a href="{% url 'accounts:staff_user_edit' user.pk %}" class="small-action">Edit</a>
+          </td>
+        </tr>
+      {% empty %}
+        <tr><td colspan="6">No users found.</td></tr>
+      {% endfor %}
+    </tbody>
+  </table>
+
+  {% if is_paginated %}
+    <div style="margin-top:12px;">
+      {% if page_obj.has_previous %}
+        <a href="?q={{ q }}&page={{ page_obj.previous_page_number }}" class="btn">Prev</a>
+      {% endif %}
+      <span style="margin:0 8px;">Page {{ page_obj.number }} / {{ page_obj.paginator.num_pages }}</span>
+      {% if page_obj.has_next %}
+        <a href="?q={{ q }}&page={{ page_obj.next_page_number }}" class="btn">Next</a>
+      {% endif %}
+    </div>
+  {% endif %}
+</div>
+{% endblock %}

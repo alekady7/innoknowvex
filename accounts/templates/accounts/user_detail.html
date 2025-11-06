@@ -1,0 +1,12 @@
+{% extends 'lms/base.html' %}
+{% block title %}User — Innoknowvex{% endblock %}
+{% block content %}
+<div style="max-width:640px; margin:0 auto;">
+  <h2>{{ user_obj.username }}</h2>
+  <p><strong>Email:</strong> {{ user_obj.email }}</p>
+  <p><strong>Name:</strong> {{ user_obj.get_full_name }}</p>
+  <p><strong>Phone:</strong> {{ user_obj.profile.phone }}</p>
+  <p><strong>Role:</strong> {{ user_obj.profile.role }}</p>
+  <p><a href="{% url 'accounts:staff_user_edit' user_obj.pk %}" class="btn">Edit</a></p>
+</div>
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends 'lms/base.html' %}
+{% block title %}{{ view.object|default:"Add User" }} — Innoknowvex{% endblock %}
+
+{% block content %}
+<div style="max-width:720px; margin: 0 auto;">
+  <h2>{{ view.object|default:"Add User" }}</h2>
+  <form method="post">
+    {% csrf_token %}
+    {{ form.as_p }}
+    <button type="submit" class="btn">Save</button>
+    <a href="{% url 'accounts:staff_user_list' %}" class="btn btn-outline" style="margin-left:8px;">Cancel</a>
+  </form>
+</div>
+{% endblock %}

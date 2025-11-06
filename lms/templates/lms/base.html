@@ -77,39 +77,49 @@
       </div>
 
       <nav class="nav">
-        <a href="{% url 'lms:home' %}">Home</a>
-        <a href="{% url 'lms:course_list' %}">Courses</a>
-        <a href="{% url 'lms:contact' %}">Contact</a>
+  <a href="{% url 'lms:home' %}">Home</a>
+  <a href="{% url 'lms:course_list' %}">Courses</a>
+  <a href="{% url 'lms:contact' %}">Contact</a>
 
-        {% if user.is_authenticated %}
-          <div class="nav-avatar-wrapper" title="{{ user.get_full_name|default:user.username }}">
-            <button class="nav-avatar" id="desktop-avatar-btn" type="button" aria-haspopup="true" aria-expanded="false">
-              {{ user.first_name|default:''|slice:":1"|upper }}{{ user.last_name|default:''|slice:":1"|upper }}
-            </button>
+  {% if user.is_authenticated %}
+    {# Staff-only: Manage Users route (shows only if user.is_staff) #}
+    {% if user.is_staff %}
+      <a href="{% url 'accounts:staff_user_list' %}">Manage Users</a>
+    {% endif %}
 
-            <div class="nav-avatar-dropdown" id="desktop-avatar-dropdown" role="menu" aria-hidden="true">
-              <a href="{% url 'accounts:profile' %}" class="dropdown-link">Profile</a>
-              <form method="post" action="{% url 'accounts:logout' %}">
-                {% csrf_token %}
-                <button type="submit" class="logout-button">Logout</button>
-              </form>
-            </div>
-          </div>
-        {% else %}
-          <a href="{% url 'accounts:login' %}">Login</a>
-          <a href="{% url 'accounts:register' %}">Sign Up</a>
-        {% endif %}
+    {# Avatar + dropdown (keeps existing UI) #}
+    <div class="nav-avatar-wrapper" title="{{ user.get_full_name|default:user.username }}">
+      <button class="nav-avatar" id="desktop-avatar-btn" type="button" aria-haspopup="true" aria-expanded="false">
+        {{ user.first_name|default:''|slice:":1"|upper }}{{ user.last_name|default:''|slice:":1"|upper }}
+      </button>
 
-        {% if user.is_active and user.is_staff %}
-          <a href="/admin/">Admin</a>
-        {% endif %}
+      <div class="nav-avatar-dropdown" id="desktop-avatar-dropdown" role="menu" aria-hidden="true">
+        <a href="{% url 'accounts:profile' %}" class="dropdown-link">Profile</a>
 
-        <!-- THEME TOGGLE: shown in sidebar (desktop) -->
-        <div class="theme-toggle-wrapper">
-          <label class="theme-toggle-label">Theme</label>
-          <button id="theme-toggle" class="theme-toggle-btn" title="Toggle theme">🌓</button>
-        </div>
-      </nav>
+        {# POST logout form (safe) #}
+        <form method="post" action="{% url 'accounts:logout' %}">
+          {% csrf_token %}
+          <button type="submit" class="logout-button">Logout</button>
+        </form>
+      </div>
+    </div>
+
+  {% else %}
+    <a href="{% url 'accounts:login' %}">Login</a>
+    <a href="{% url 'accounts:register' %}">Sign Up</a>
+  {% endif %}
+
+  {% if user.is_active and user.is_staff %}
+    <a href="/admin/">Admin</a>
+  {% endif %}
+
+  <!-- THEME TOGGLE: shown in sidebar (desktop) -->
+  <div class="theme-toggle-wrapper">
+    <label class="theme-toggle-label">Theme</label>
+    <button id="theme-toggle" class="theme-toggle-btn" title="Toggle theme">🌓</button>
+  </div>
+</nav>
+
 
       <div class="footer-note">© {% now 'Y' %} Innoknowvex</div>
     </aside>

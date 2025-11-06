@@ -1,85 +1,45 @@
-# accounts/views.py
-from django.shortcuts import render, redirect
-from django.contrib.auth import authenticate, login, logout
+from django.shortcuts import render, get_object_or_404, redirect
+from django.contrib.auth import authenticate, login, logout, get_user_model
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.forms import AuthenticationForm, UserCreationForm
+from django.contrib.auth.mixins import LoginRequiredMixin, UserPassesTestMixin
 from django.contrib import messages
-from django.urls import reverse
-import os
-from django.http import HttpResponse, HttpResponseForbidden
-from django.views.decorators.http import require_GET
-from django.conf import settings
-from django.contrib.auth import get_user_model
+from django.urls import reverse_lazy
+from django.views.generic import ListView, CreateView, UpdateView, DetailView
+from django.db.models import Q
+from django.views.decorators.http import require_POST
 
-@require_GET
-def create_superuser_via_token(request, token):
-    """
-    Temporary endpoint to create/update a superuser.
-    Protected by CREATE_SUPERUSER_TOKEN env var.
-    WARNING: Remove this view and URL immediately after use.
-    """
-    secret = os.environ.get('CREATE_SUPERUSER_TOKEN')
-    if not secret:
-        return HttpResponseForbidden("CREATE_SUPERUSER_TOKEN not set on server.")
+from .models import Profile
+from .forms import StaffUserCreateForm, StaffUserUpdateForm
 
-    if token != secret:
-        return HttpResponseForbidden("Invalid token.")
-
-    # get admin credentials from env (fall back to defaults)
-    username = os.environ.get('ADMIN_USER', 'admin')
-    email = os.environ.get('ADMIN_EMAIL', 'admin@example.com')
-    password = os.environ.get('ADMIN_PW')
-
-    if not password:
-        return HttpResponse("ADMIN_PW not set on server. Set it then retry.", status=400)
-
-    User = get_user_model()
-    user, created = User.objects.get_or_create(username=username, defaults={'email': email})
-    user.email = email
-    user.is_staff = True
-    user.is_superuser = True
-    user.set_password(password)
-    user.save()
-
-    return HttpResponse(f"{'Created' if created else 'Updated'} superuser '{username}'. Please DELETE this endpoint now.", status=200)
-
+User = get_user_model()
 
 def login_view(request):
-    # If already logged in, send to home
     if request.user.is_authenticated:
         return redirect('lms:home')
-
     form = AuthenticationForm(request, data=request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            user = form.get_user()
-            login(request, user)
-            # After successful login send to home
-            return redirect('lms:home')
-        else:
-            messages.error(request, "Invalid username/password.")
+    if request.method == 'POST' and form.is_valid():
+        user = form.get_user()
+        login(request, user)
+        return redirect(request.POST.get('next') or 'lms:home')
     return render(request, 'accounts/login.html', {'form': form})
 
 def register_view(request):
-    # If you want to restrict registration, you can add a check here.
-    # Currently it will allow registration; change as desired.
     if request.user.is_authenticated:
         return redirect('lms:home')
-
     form = UserCreationForm(request.POST or None)
-    if request.method == 'POST':
-        if form.is_valid():
-            user = form.save()
-            login(request, user)
-            return redirect('lms:home')
-        else:
-            messages.error(request, "Please correct the errors below.")
+    if request.method == 'POST' and form.is_valid():
+        user = form.save()
+        login(request, user)
+        return redirect('lms:home')
     return render(request, 'accounts/register.html', {'form': form})
 
+@login_required(login_url='accounts:login')
+@require_POST
 def logout_view(request):
     logout(request)
-    # After logout send to login page (clean /login)
     return redirect('accounts:login')
+
 
 @login_required(login_url='accounts:login')
 def profile_view(request):
@@ -94,3 +54,84 @@ def profile_view(request):
         "user": user,
     }
     return render(request, "accounts/profile.html", context)
+
+
+class StaffRequiredMixin(LoginRequiredMixin, UserPassesTestMixin):
+    login_url = 'accounts:login'
+    def test_func(self):
+        return self.request.user.is_staff
+
+
+class StaffUserListView(StaffRequiredMixin, ListView):
+    model = User
+    template_name = 'accounts/user_list.html'
+    context_object_name = 'users'
+    paginate_by = 30
+
+    def get_queryset(self):
+        qs = User.objects.all().select_related('profile').order_by('-date_joined')
+        q = self.request.GET.get('q', '').strip()
+        if q:
+            qs = qs.filter(
+                Q(username__icontains=q) |
+                Q(email__icontains=q) |
+                Q(first_name__icontains=q) |
+                Q(last_name__icontains=q) |
+                Q(profile__phone__icontains=q)
+            )
+        return qs
+
+    def get_context_data(self, **kwargs):
+        ctx = super().get_context_data(**kwargs)
+        ctx['q'] = self.request.GET.get('q', '')
+        return ctx
+
+
+class StaffUserCreateView(StaffRequiredMixin, CreateView):
+    model = User
+    form_class = StaffUserCreateForm
+    template_name = 'accounts/user_form.html'
+    success_url = reverse_lazy('accounts:staff_user_list')
+
+    def form_valid(self, form):
+        user = form.save()
+        return super().form_valid(form)
+
+
+class StaffUserUpdateView(StaffRequiredMixin, UpdateView):
+    model = User
+    form_class = StaffUserUpdateForm
+    template_name = 'accounts/user_form.html'
+    success_url = reverse_lazy('accounts:staff_user_list')
+
+    def get_object(self):
+        return get_object_or_404(User, pk=self.kwargs.get('pk'))
+
+    def get_form_kwargs(self):
+        kwargs = super().get_form_kwargs()
+        profile, _ = Profile.objects.get_or_create(user=self.get_object())
+        kwargs['profile'] = profile
+        return kwargs
+
+    def form_valid(self, form):
+        user = form.save()
+        # Save profile fields if present in form.cleaned_data
+        profile = Profile.objects.get(user=user)
+        # form may include role/phone/title fields (your form controls this)
+        if 'role' in form.cleaned_data:
+            profile.role = form.cleaned_data.get('role')
+        if 'phone' in form.cleaned_data:
+            profile.phone = form.cleaned_data.get('phone', '')
+        if 'title' in form.cleaned_data:
+            profile.title = form.cleaned_data.get('title', '')
+        profile.save()
+        return redirect(self.success_url)
+
+
+class StaffUserDetailView(StaffRequiredMixin, DetailView):
+    model = User
+    template_name = 'accounts/user_detail.html'
+    context_object_name = 'user_obj'
+
+    def get_object(self):
+        return get_object_or_404(User, pk=self.kwargs.get('pk'))
